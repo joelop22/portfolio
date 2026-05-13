@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Joel Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        if(sessionStorage.getItem('auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">JOEL <span style="font-size: 1rem; color: var(--color-lime);">ADMIN</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Back to Home</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="admin-panel" style="justify-content: flex-start;">
+            <div class="container">
+                <h2 style="margin-bottom: 1rem;">Portfolio Management</h2>
+                <p style="color: var(--color-text-muted); margin-bottom: 3rem;">Add new works to your portfolio. Changes are saved locally.</p>
+                
+                <div style="background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); margin-bottom: 3rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Add New Work</h3>
+                    <form id="add-work-form">
+                        <div class="form-group">
+                            <label for="work-title">Title</label>
+                            <input type="text" id="work-title" class="form-control" required placeholder="e.g. Neon Energy Drink">
+                        </div>
+                        <div class="form-group">
+                            <label for="work-category">Category</label>
+                            <select id="work-category" class="form-control" required>
+                                <option value="product-posters">Product Posters</option>
+                                <option value="image-manipulation">Image Manipulation</option>
+                                <option value="social-media-ads">Social Media Ads</option>
+                                <option value="movie-posters">Movie Posters</option>
+                            </select>
+                        </div>
+                        <input type="hidden" id="edit-work-id" value="">
+                        <div class="form-group">
+                            <label>Image Upload</label>
+                            <div class="drop-zone" id="drop-zone">
+                                <div class="drop-zone-text" id="drop-zone-text">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & Drop an image here or click to select</p>
+                                </div>
+                                <input type="file" id="work-file" accept="image/*">
+                                <img src="" alt="Preview" class="preview-img" id="preview-img">
+                            </div>
+                        </div>
+                        <input type="hidden" id="work-image-base64" value="">
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn" id="submit-btn" style="flex: 1;">Add to Portfolio</button>
+                            <button type="button" class="btn" id="cancel-edit-btn" style="background: #ff4757; display: none;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div style="background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto;">
+                    <h3 style="margin-bottom: 1.5rem;">Current Works</h3>
+                    <table id="works-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Image Preview</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="works-list">
+                            <!-- Filled by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joel Shajan Varghese | Graphic Designer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="glow-cursor" id="glow-cursor"></div>
+
+    <nav>
+        <div class="container">
+            <a href="#" class="logo fade-up">JOEL</a>
+            <ul class="nav-links fade-up">
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#work">Work</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="hero" class="hero">
+            <!-- Desktop Video -->
+            <video autoplay muted loop playsinline class="hero-video desktop-only">
+                <source src="herov/VN20260508_113105.mp4" type="video/mp4">
+            </video>
+
+            <!-- Mobile Video -->
+            <video autoplay muted loop playsinline class="hero-video-mobile mobile-only">
+                <source src="herov/VN20260508_124820.mp4" type="video/mp4">
+            </video>
+
+            <div class="hero-overlay"></div>
+            <div class="container">
+                <h1 class="fade-up">Joel Shajan<br>Varghese.</h1>
+                <p class="hero-subtitle fade-up" style="transition-delay: 0.1s;">Crafting Visual Experiences.</p>
+                <p class="hero-desc fade-up" style="transition-delay: 0.2s;">I specialize in branding, digital design,
+                    and creating compelling visual stories.</p>
+                <div class="hero-socials fade-up" style="transition-delay: 0.3s;">
+                    <a href="https://www.instagram.com/_joe.el?igsh=ZTkzYnZmMDRlMXZ6" target="_blank"
+                        aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.behance.net/joelshajanv" target="_blank" aria-label="Behance"><i
+                            class="fab fa-behance"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="container">
+                <h2 class="fade-up">About Me</h2>
+                <div class="about-content">
+                    <div class="about-text fade-up">
+                        <p>I Am <span>Joel Shajan Varghese</span>. I'm from <span>Angamaly</span>, and I'm a
+                            graphic designer currently working at <span>Sahrdaya Institute of Management Studies,
+                                Kodakara</span>.</p>
+                        <br>
+                        <p>With a strong eye for detail and aesthetics, I specialize in creating striking visual content
+                            that captures attention and delivers messages effectively. I thrive on bringing ideas to
+                            life through creative manipulation and design.</p>
+                    </div>
+                    <div class="about-image-wrapper fade-up" style="transition-delay: 0.2s;">
+                        <!-- Placeholder for User's Photo -->
+                        <div class="about-image">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience">
+            <div class="container">
+                <h2 class="fade-up">Software Experience</h2>
+                <div class="skills-grid fade-up" style="transition-delay: 0.1s;">
+                    <div class="skill-box">
+                        <h4>Photoshop</h4>
+                        <div class="percentage">95%</div>
+                    </div>
+                    <div class="skill-box">
+                        <h4>Illustrator</h4>
+                        <div class="percentage">75%</div>
+                    </div>
+                    <div class="skill-box">
+                        <h4>Premiere Pro</h4>
+                        <div class="percentage">75%</div>
+                    </div>
+                    <div class="skill-box">
+                        <h4>After Effects</h4>
+                        <div class="percentage">50%</div>
+                    </div>
+                </div>
+
+                <!-- Stats moved here -->
+                <div class="stats-grid fade-up" style="margin-top: 4rem; transition-delay: 0.2s;">
+                    <div class="stat-box">
+                        <h3>2</h3>
+                        <p>Years Corporate Experience</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>3</h3>
+                        <p>Years Freelance</p>
+                    </div>
+                    <div class="stat-box" style="grid-column: 1 / -1;">
+                        <h3>5</h3>
+                        <p>Years Photoshop Mastery</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="work">
+            <div class="container">
+                <h2 class="fade-up">Selected Works</h2>
+
+                <div class="work-category fade-up" id="cat-product-posters">
+                    <h3>Product Posters</h3>
+                    <div class="works-grid" id="grid-product-posters">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="work-category fade-up" id="cat-image-manipulation">
+                    <h3>Image Manipulation</h3>
+                    <div class="works-grid" id="grid-image-manipulation">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="work-category fade-up" id="cat-social-media-ads">
+                    <h3>Social Media Ads</h3>
+                    <div class="works-grid" id="grid-social-media-ads">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="work-category fade-up" id="cat-movie-posters">
+                    <h3>Movie Posters</h3>
+                    <div class="works-grid" id="grid-movie-posters">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <h2 class="fade-up">Let's Connect</h2>
+                <div class="contact-grid">
+                    <div class="contact-text fade-up">
+                        <p style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--color-text-muted);">Ready to
+                            elevate your brand's visual identity? Let's discuss how we can work together to create
+                            something amazing.</p>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-item fade-up" style="transition-delay: 0.1s;">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:joelshajan2004@gmail.com">joelshajan2004@gmail.com</a>
+                        </div>
+                        <div class="contact-item fade-up" style="transition-delay: 0.2s;">
+                            <i class="fas fa-phone-alt"></i>
+                            <a href="tel:9400144956">9400144956</a>
+                        </div>
+                        <div class="contact-item fade-up" style="transition-delay: 0.3s;">
+                            <i class="fab fa-instagram"></i>
+                            <a href="https://www.instagram.com/_joe.el?igsh=ZTkzYnZmMDRlMXZ6"
+                                target="_blank">@_joe.el</a>
+                        </div>
+                        <div class="contact-item fade-up" style="transition-delay: 0.4s;">
+                            <i class="fab fa-behance"></i>
+                            <a href="https://www.behance.net/joelshajanv" target="_blank">behance.net/joelshajanv</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="fade-up">
+        <p><a href="login.html">&copy;</a> 2026 Joel. All rights reserved.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
