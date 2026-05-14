@@ -535,6 +535,7 @@ footer a {
   .hero .container {
      position: relative; /* Add this */
   top: 60px;          /* This moves only the text/socials down by 60px */
+     z-index: 10;   
     order: 1;
     padding: 0 1.5rem;
     text-align: center;
