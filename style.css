@@ -521,7 +521,7 @@ footer a {
   .hero {
     min-height: 100vh;
     /* Back to full height for centering */
-    padding-top: 60px;
+    padding-top: 85px;
     padding-bottom: 40px;
     display: flex;
     flex-direction: column;
