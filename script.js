@@ -202,6 +202,21 @@ const setupAnimations = () => {
         });
     }
 };
+// --- Content Protection ---
+const setupProtection = () => {
+    // Disable Right-Click
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+
+    // Disable Shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12') e.preventDefault();
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) e.preventDefault();
+        if (e.ctrlKey && e.key === 'u') e.preventDefault();
+        if (e.ctrlKey && e.key === 's') e.preventDefault();
+    });
+};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -209,4 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupSmoothScroll();
     await renderCategoryPage();
     setupAnimations();
+    setupProtection(); // <--- Add this line
+});
+
 });
