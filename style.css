@@ -636,9 +636,9 @@ footer a {
 
   .contact-info {
    display: grid;
-    grid-template-columns: 2fr; /* Changed from repeat(2, 1fr) to stack vertically */
+    grid-template-columns: 1fr; /* Changed from repeat(2, 1fr) to stack vertically */
     gap: 0.5rem;
-    width: 110%;
+    width: 100%;
   }
 
   .contact-item {
@@ -647,8 +647,11 @@ footer a {
   }
 
   .contact-item i {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+      margin-bottom: 0;
+  padding: 0.8rem; /* Change from 1rem to 0.8rem to make buttons more compact */
+    flex-direction: column;
+  text-align: center;
+  font-size: 0.9rem;
   }
 
   nav .container {
