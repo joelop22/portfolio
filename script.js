@@ -224,7 +224,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupSmoothScroll();
     await renderCategoryPage();
     setupAnimations();
-    setupProtection(); // <--- Add this line
-});
 
 });
