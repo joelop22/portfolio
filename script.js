@@ -131,12 +131,19 @@ const renderCategoryPage = async () => {
     categoryWorks.forEach(work => {
         const card = document.createElement('div');
         card.className = 'work-card fade-up';
+        card.style.cursor = 'pointer';
         card.innerHTML = `
             <img src="${work.image}" alt="${work.title}" class="work-img">
             <div class="work-info">
                 <h4>${work.title}</h4>
             </div>
         `;
+
+        // Open modal on click
+        card.addEventListener('click', () => {
+            openModal(work.image, work.title);
+        });
+
         grid.appendChild(card);
     });
 };
@@ -202,6 +209,7 @@ const setupAnimations = () => {
         });
     }
 };
+
 // --- Content Protection ---
 
 const setupProtection = () => {
@@ -234,8 +242,59 @@ const setupProtection = () => {
     });
 };
 
+// --- Image Modal / Popup ---
+
+const setupModal = () => {
+    // Create modal element if it doesn't exist
+    if (document.getElementById('work-modal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'work-modal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="modal-close"><i class="fas fa-times"></i></span>
+            <img src="" alt="" class="modal-img">
+            <div class="modal-info"></div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Close on click outside or close button
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.closest('.modal-close')) {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Re-enable scroll
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+};
+
+const openModal = (imgSrc, title) => {
+    const modal = document.getElementById('work-modal');
+    if (!modal) return;
+
+    const modalImg = modal.querySelector('.modal-img');
+    const modalInfo = modal.querySelector('.modal-info');
+
+    modalImg.src = imgSrc;
+    modalImg.alt = title;
+    modalInfo.textContent = title;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Disable background scroll
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
+    setupModal(); // Initialize modal first
     await renderIndexWorks();
     setupSmoothScroll();
     await renderCategoryPage();
