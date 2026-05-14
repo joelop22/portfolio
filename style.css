@@ -636,9 +636,9 @@ footer a {
 
   .contact-info {
    display: grid;
-    grid-template-columns: 1fr; /* Changed from repeat(2, 1fr) to stack vertically */
-    gap: 1rem;
-    width: 100%;
+    grid-template-columns: 2fr; /* Changed from repeat(2, 1fr) to stack vertically */
+    gap: 0.5rem;
+    width: 110%;
   }
 
   .contact-item {
