@@ -203,6 +203,7 @@ const setupAnimations = () => {
     }
 };
 // --- Content Protection ---
+
 const setupProtection = () => {
     // Disable Right-Click
     document.addEventListener('contextmenu', (e) => {
@@ -211,10 +212,25 @@ const setupProtection = () => {
 
     // Disable Shortcuts
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'F12') e.preventDefault();
-        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) e.preventDefault();
-        if (e.ctrlKey && e.key === 'u') e.preventDefault();
-        if (e.ctrlKey && e.key === 's') e.preventDefault();
+        // F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+        }
+        
+        // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+            e.preventDefault();
+        }
+
+        // Ctrl+U (View Source)
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+        }
+
+        // Ctrl+S (Save)
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+        }
     });
 };
 
@@ -224,5 +240,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupSmoothScroll();
     await renderCategoryPage();
     setupAnimations();
-
+    setupProtection();
 });
