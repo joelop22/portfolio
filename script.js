@@ -292,8 +292,23 @@ const openModal = (imgSrc, title) => {
     document.body.style.overflow = 'hidden'; // Disable background scroll
 };
 
+// --- Clean URL (hide .html from address bar on all pages) ---
+const cleanUrl = () => {
+    const url = window.location.href;
+    if (url.endsWith('index.html') || url.endsWith('index')) {
+        // Show root / for index page
+        const cleanedUrl = url.replace(/\/index(\.html)?$/, '/');
+        history.replaceState(null, '', cleanedUrl);
+    } else if (url.endsWith('.html')) {
+        // Remove .html from subpages
+        const cleanedUrl = url.slice(0, -5);
+        history.replaceState(null, '', cleanedUrl);
+    }
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
+    cleanUrl(); // Hide .html from URL bar
     setupModal(); // Initialize modal first
     await renderIndexWorks();
     setupSmoothScroll();
