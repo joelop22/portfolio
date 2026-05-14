@@ -521,13 +521,13 @@ footer a {
   .hero {
     min-height: 100vh;
     /* Back to full height for centering */
-    padding-top: 80px;
+    padding-top: 60px;
     padding-bottom: 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     /* Vertical center */
-    align-items: flex-start;
+    align-items: center;
     /* Horizontal left */
     gap: 1.5rem;
   }
@@ -535,6 +535,8 @@ footer a {
   .hero .container {
     order: 1;
     padding: 0 1.5rem;
+    text-align: center;
+  width: 100%;
   }
 
   .desktop-only {
@@ -564,8 +566,9 @@ footer a {
   }
 
   .hero h1 {
-    font-size: 4rem;
+    font-size: 2.5rem;
     margin-bottom: 0.5rem;
+    text-align: center;
   }
 
   .hero .hero-subtitle {
@@ -575,6 +578,11 @@ footer a {
 
   .hero .hero-desc {
     font-size: 0.9rem;
+    margin: 0 auto; /* Centers the block */
+    .hero-socials {
+  justify-content: center; /* Centers the icons */
+  margin-top: 1.5rem;
+}
   }
 
   .about-content {
