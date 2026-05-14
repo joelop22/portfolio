@@ -579,12 +579,16 @@ footer a {
   .hero .hero-desc {
     font-size: 0.9rem;
     margin: 0 auto; /* Centers the block */
-    .hero-socials {
-  justify-content: center; /* Centers the icons */
-  margin-top: 1.5rem;
-}
   }
 
+  .hero-socials {
+  display: flex;
+  justify-content: center; /* This centers the icons horizontally */
+  width: 100%;             /* This makes the container span the full width */
+  margin-top: 1.5rem;
+  gap: 1.5rem;
+}
+  
   .about-content {
     flex-direction: row;
     /* Side by side */
