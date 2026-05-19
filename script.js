@@ -49,7 +49,7 @@ const renderIndexWorks = async () => {
     const categories = [
         { id: 'product-posters', page: 'product-posters.html' },
         { id: 'image-manipulation', page: 'image-manipulation.html' },
-        { id: 'social-media-ads', page: 'social-media-ads.html' },
+        { id: 'social-media-Posters', page: 'social-media-ads.html' },
         { id: 'movie-posters', page: 'movie-posters.html' }
     ];
 
