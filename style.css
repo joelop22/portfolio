@@ -910,3 +910,38 @@ th {
   font-size: 1.5rem;
   text-align: center;
 }
+
+/* Subpage Masonry Layout */
+#full-works-grid {
+  display: block !important; /* Override standard grid display */
+  column-count: 3;
+  column-gap: 2rem;
+  width: 100%;
+}
+
+#full-works-grid .work-card {
+  display: inline-block !important; /* Stack columns natively */
+  width: 100%;
+  margin-bottom: 2rem;
+  break-inside: avoid; /* Prevent card splitting across columns */
+}
+
+@media (max-width: 992px) {
+  #full-works-grid {
+    column-count: 2;
+    column-gap: 1.5rem;
+  }
+  #full-works-grid .work-card {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  #full-works-grid {
+    column-count: 1; /* Single column on mobile screens */
+    column-gap: 0;
+  }
+  #full-works-grid .work-card {
+    margin-bottom: 1.5rem;
+  }
+}

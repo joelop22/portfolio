@@ -22,26 +22,121 @@ const defaultWorks = [
     { id: 17, title: 'Sci-Fi Epic', category: 'movie-posters', image: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=600&q=80' }
 ];
 
-// Firebase fetching logic
-const getWorks = async () => {
+let worksCache = null;
+
+// Global observer for scroll animations
+const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            fadeObserver.unobserve(entry.target); // Run once
+        }
+    });
+}, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+// Helper to compare two arrays of works
+const areWorksEqual = (a, b) => {
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    if (a.length !== b.length) return false;
+    
+    const sortedA = [...a].sort((x, y) => String(x.id).localeCompare(String(y.id)));
+    const sortedB = [...b].sort((x, y) => String(x.id).localeCompare(String(y.id)));
+    
+    for (let i = 0; i < sortedA.length; i++) {
+        const itemA = sortedA[i];
+        const itemB = sortedB[i];
+        
+        if (String(itemA.id) !== String(itemB.id) ||
+            itemA.title !== itemB.title ||
+            itemA.category !== itemB.category ||
+            itemA.image !== itemB.image ||
+            (itemA.size || '') !== (itemB.size || '') ||
+            !!itemA.showOnIndex !== !!itemB.showOnIndex) {
+            return false;
+        }
+    }
+    return true;
+};
+
+// Helper to fetch from database and update cache
+const fetchAndUpdateCache = async () => {
     try {
+        if (typeof db === 'undefined' || !db) {
+            throw new Error("Firebase DB is not initialized");
+        }
         const snapshot = await db.collection('portfolioWorks').get();
         if (snapshot.empty) {
             console.log("Firestore empty, populating with default data...");
             for (let work of defaultWorks) {
                 await db.collection('portfolioWorks').doc(work.id.toString()).set(work);
             }
+            localStorage.setItem('portfolioWorksCache', JSON.stringify(defaultWorks));
+            worksCache = defaultWorks;
             return defaultWorks;
         }
         const works = [];
         snapshot.forEach(doc => {
             works.push(doc.data());
         });
+        localStorage.setItem('portfolioWorksCache', JSON.stringify(works));
+        worksCache = works;
         return works;
     } catch (e) {
-        console.error("Error fetching works from Firebase, falling back to local defaults: ", e);
-        return JSON.parse(localStorage.getItem('portfolioWorks')) || defaultWorks;
+        console.error("Error fetching works from Firebase: ", e);
+        const cached = localStorage.getItem('portfolioWorksCache');
+        return cached ? JSON.parse(cached) : defaultWorks;
     }
+};
+
+// Helper for revalidation in background
+const revalidateCacheInBackground = async () => {
+    try {
+        if (typeof db === 'undefined' || !db) return;
+        const snapshot = await db.collection('portfolioWorks').get();
+        if (!snapshot.empty) {
+            const works = [];
+            snapshot.forEach(doc => {
+                works.push(doc.data());
+            });
+            
+            const oldSerialized = localStorage.getItem('portfolioWorksCache');
+            const oldWorks = oldSerialized ? JSON.parse(oldSerialized) : null;
+            
+            if (!areWorksEqual(oldWorks, works)) {
+                console.log("Database update detected! Re-rendering view...");
+                localStorage.setItem('portfolioWorksCache', JSON.stringify(works));
+                worksCache = works;
+                // Live re-render UI in place
+                await renderIndexWorks();
+                await renderCategoryPage();
+            }
+        }
+    } catch (e) {
+        console.warn("Background cache sync failed: ", e);
+    }
+};
+
+// SWR getWorks function
+const getWorks = async () => {
+    // 1. Return in-memory cache if available (0ms)
+    if (worksCache) return worksCache;
+
+    // 2. Return localStorage cache if available (5ms)
+    const cached = localStorage.getItem('portfolioWorksCache');
+    if (cached) {
+        try {
+            worksCache = JSON.parse(cached);
+            // Run background fetch to refresh cache asynchronously
+            revalidateCacheInBackground();
+            return worksCache;
+        } catch (e) {
+            console.error("Failed to parse cached data: ", e);
+        }
+    }
+
+    // 3. Fallback: retrieve synchronously if no cache is available
+    return await fetchAndUpdateCache();
 };
 
 // Render works on index page
@@ -49,7 +144,7 @@ const renderIndexWorks = async () => {
     const categories = [
         { id: 'product-posters', page: 'product-posters.html' },
         { id: 'image-manipulation', page: 'image-manipulation.html' },
-        { id: 'social-media-Posters', page: 'social-media-ads.html' },
+        { id: 'social-media-ads', page: 'social-media-ads.html' },
         { id: 'movie-posters', page: 'movie-posters.html' }
     ];
 
@@ -61,8 +156,13 @@ const renderIndexWorks = async () => {
 
         grid.innerHTML = '';
         
-        // Filter works for this category
-        const catWorks = works.filter(w => w.category === cat.id);
+        // Filter works for this category that are configured to show on the index page
+        let catWorks = works.filter(w => w.category === cat.id && w.showOnIndex === true);
+        
+        // Fallback: If no works are explicitly flagged for the index in this category, display all category works
+        if (catWorks.length === 0) {
+            catWorks = works.filter(w => w.category === cat.id);
+        }
         
         // Take up to 5 works
         const topWorks = catWorks.slice(0, 5);
@@ -79,6 +179,7 @@ const renderIndexWorks = async () => {
                 </div>
             `;
             grid.appendChild(card);
+            fadeObserver.observe(card);
         });
 
         // Add the 6th "View More" card
@@ -91,6 +192,7 @@ const renderIndexWorks = async () => {
             <span>View All</span>
         `;
         grid.appendChild(viewMore);
+        fadeObserver.observe(viewMore);
     });
 };
 
@@ -123,6 +225,8 @@ const renderCategoryPage = async () => {
     const works = await getWorks();
     const categoryWorks = works.filter(w => w.category === pageId);
 
+    grid.innerHTML = '';
+
     if (categoryWorks.length === 0) {
         grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted);">No works found for this category.</p>';
         return;
@@ -132,6 +236,16 @@ const renderCategoryPage = async () => {
         const card = document.createElement('div');
         card.className = 'work-card fade-up';
         card.style.cursor = 'pointer';
+        
+        // Apply custom aspect ratio based on size for subpages
+        if (work.size) {
+            const [w, h] = work.size.split('x');
+            card.style.aspectRatio = `${w} / ${h}`;
+        } else {
+            card.style.aspectRatio = '1080 / 1080'; // Default to square
+        }
+        card.style.alignSelf = 'start'; // Prevent vertical stretching in CSS grid rows
+
         card.innerHTML = `
             <img src="${work.image}" alt="${work.title}" class="work-img">
             <div class="work-info">
@@ -145,24 +259,16 @@ const renderCategoryPage = async () => {
         });
 
         grid.appendChild(card);
+        fadeObserver.observe(card);
     });
 };
 
 // --- Animations & Interactivity ---
 
 const setupAnimations = () => {
-    // 1. Intersection Observer for Fade-Up elements
+    // 1. Intersection Observer for static Fade-Up elements
     const fadeElements = document.querySelectorAll('.fade-up');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target); // Run once
-            }
-        });
-    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-
-    fadeElements.forEach(el => observer.observe(el));
+    fadeElements.forEach(el => fadeObserver.observe(el));
 
     // 2. Dynamic Violet Hue Shift on Scroll
     let lastScrollY = window.scrollY;
@@ -294,15 +400,20 @@ const openModal = (imgSrc, title) => {
 
 // --- Clean URL (hide .html from address bar on all pages) ---
 const cleanUrl = () => {
-    const url = window.location.href;
-    if (url.endsWith('index.html') || url.endsWith('index')) {
-        // Show root / for index page
-        const cleanedUrl = url.replace(/\/index(\.html)?$/, '/');
-        history.replaceState(null, '', cleanedUrl);
-    } else if (url.endsWith('.html')) {
-        // Remove .html from subpages
-        const cleanedUrl = url.slice(0, -5);
-        history.replaceState(null, '', cleanedUrl);
+    try {
+        if (window.location.protocol === 'file:') return; // Do not clean URL on local file system to avoid DOMExceptions
+        const url = window.location.href;
+        if (url.endsWith('index.html') || url.endsWith('index')) {
+            // Show root / for index page
+            const cleanedUrl = url.replace(/\/index(\.html)?$/, '/');
+            history.replaceState(null, '', cleanedUrl);
+        } else if (url.endsWith('.html')) {
+            // Remove .html from subpages
+            const cleanedUrl = url.slice(0, -5);
+            history.replaceState(null, '', cleanedUrl);
+        }
+    } catch (e) {
+        console.warn("Could not clean URL: ", e);
     }
 };
 

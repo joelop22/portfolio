@@ -11,17 +11,90 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submit-btn');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
 
-    // Retrieve works from Firestore
-    const getWorks = async () => {
+    let worksCache = null;
+
+    // Helper to fetch from database and update cache
+    const fetchAndUpdateCache = async () => {
         try {
+            if (typeof db === 'undefined' || !db) {
+                throw new Error("Firebase DB is not initialized");
+            }
             const snapshot = await db.collection('portfolioWorks').get();
             const works = [];
             snapshot.forEach(doc => works.push(doc.data()));
+            localStorage.setItem('portfolioWorksCache', JSON.stringify(works));
+            worksCache = works;
             return works;
         } catch (e) {
             console.error("Error fetching works: ", e);
-            return [];
+            const cached = localStorage.getItem('portfolioWorksCache');
+            return cached ? JSON.parse(cached) : [];
         }
+    };
+
+    // Helper to compare two arrays of works
+    const areWorksEqual = (a, b) => {
+        if (!a && !b) return true;
+        if (!a || !b) return false;
+        if (a.length !== b.length) return false;
+        
+        const sortedA = [...a].sort((x, y) => String(x.id).localeCompare(String(y.id)));
+        const sortedB = [...b].sort((x, y) => String(x.id).localeCompare(String(y.id)));
+        
+        for (let i = 0; i < sortedA.length; i++) {
+            const itemA = sortedA[i];
+            const itemB = sortedB[i];
+            
+            if (String(itemA.id) !== String(itemB.id) ||
+                itemA.title !== itemB.title ||
+                itemA.category !== itemB.category ||
+                itemA.image !== itemB.image ||
+                (itemA.size || '') !== (itemB.size || '') ||
+                !!itemA.showOnIndex !== !!itemB.showOnIndex) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    // Helper for revalidation in background
+    const revalidateCacheInBackground = async () => {
+        try {
+            if (typeof db === 'undefined' || !db) return;
+            const snapshot = await db.collection('portfolioWorks').get();
+            const works = [];
+            snapshot.forEach(doc => works.push(doc.data()));
+            
+            const oldSerialized = localStorage.getItem('portfolioWorksCache');
+            const oldWorks = oldSerialized ? JSON.parse(oldSerialized) : null;
+            
+            if (!areWorksEqual(oldWorks, works)) {
+                console.log("Database update detected in admin! Re-rendering table...");
+                localStorage.setItem('portfolioWorksCache', JSON.stringify(works));
+                worksCache = works;
+                await renderTable();
+            }
+        } catch (e) {
+            console.warn("Background cache sync failed: ", e);
+        }
+    };
+
+    // Retrieve works from cache (SWR style)
+    const getWorks = async () => {
+        if (worksCache) return worksCache;
+
+        const cached = localStorage.getItem('portfolioWorksCache');
+        if (cached) {
+            try {
+                worksCache = JSON.parse(cached);
+                revalidateCacheInBackground();
+                return worksCache;
+            } catch (e) {
+                console.error("Failed to parse cached data: ", e);
+            }
+        }
+
+        return await fetchAndUpdateCache();
     };
 
     const renderTable = async () => {
@@ -35,6 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.innerHTML = `
                 <td>${work.title}</td>
                 <td><span style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.9em;">${work.category}</span></td>
+                <td><span style="color: var(--color-text-muted); font-size: 0.9em;">${work.size || '1080x1080'}</span></td>
+                <td><span style="color: ${work.showOnIndex ? '#2ed573' : 'var(--color-text-muted)'}; font-size: 1.1em;">${work.showOnIndex ? '<i class="fas fa-check-circle" style="color: #2ed573;"></i> Yes' : '<i class="far fa-circle"></i> No'}</span></td>
                 <td><img src="${work.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
                 <td>
                     <button class="action-btn edit" onclick="editWork(${work.id})"><i class="fas fa-edit"></i> Edit</button>
@@ -50,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm('Are you sure you want to delete this work?')) {
             try {
                 await db.collection('portfolioWorks').doc(id.toString()).delete();
+                worksCache = null; // Invalidate cache on deletion
                 renderTable();
             } catch (e) {
                 alert("Error deleting work: " + e.message);
@@ -65,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('work-title').value = work.title;
         document.getElementById('work-category').value = work.category;
+        document.getElementById('work-size').value = work.size || '1080x1080';
+        document.getElementById('work-show-index').checked = work.showOnIndex || false;
 
         // Setup image preview
         previewImg.src = work.image;
@@ -176,6 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const title = document.getElementById('work-title').value;
         const category = document.getElementById('work-category').value;
+        const size = document.getElementById('work-size').value;
+        const showOnIndex = document.getElementById('work-show-index').checked;
         const image = base64Input.value;
         const editId = editIdInput.value;
 
@@ -191,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (editId) {
                 // Update existing
                 await db.collection('portfolioWorks').doc(editId.toString()).update({
-                    title, category, image
+                    title, category, image, size, showOnIndex
                 });
                 alert('Work updated successfully!');
             } else {
@@ -202,10 +282,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: newId,
                     title,
                     category,
-                    image
+                    image,
+                    size,
+                    showOnIndex
                 });
                 alert('Work added successfully!');
             }
+            worksCache = null; // Invalidate cache on submit
             renderTable();
             resetForm();
         } catch (err) {

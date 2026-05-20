@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Joel Portfolio</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -42,9 +43,22 @@
                             <select id="work-category" class="form-control" required>
                                 <option value="product-posters">Product Posters</option>
                                 <option value="image-manipulation">Image Manipulation</option>
-                                <option value="social-media-Posters">Social Media Posters</option>
+                                <option value="social-media-ads">Social Media Posters</option>
                                 <option value="movie-posters">Movie Posters</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="work-size">Size</label>
+                            <select id="work-size" class="form-control" required>
+                                <option value="1080x1080">Square (1080x1080)</option>
+                                <option value="1080x1350">Portrait (1080x1350)</option>
+                                <option value="1080x1920">Story / Tall (1080x1920)</option>
+                                <option value="1920x1080">Landscape (1920x1080)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+                            <input type="checkbox" id="work-show-index" style="width: 20px; height: 20px; cursor: pointer;">
+                            <label for="work-show-index" style="margin-bottom: 0; cursor: pointer; font-weight: 600;">Show on Index Page</label>
                         </div>
                         <input type="hidden" id="edit-work-id" value="">
                         <div class="form-group">
@@ -73,6 +87,8 @@
                             <tr>
                                 <th>Title</th>
                                 <th>Category</th>
+                                <th>Size</th>
+                                <th>On Index</th>
                                 <th>Image Preview</th>
                                 <th>Actions</th>
                             </tr>
