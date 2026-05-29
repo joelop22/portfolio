@@ -988,4 +988,12 @@ th {
   #full-works-grid .work-card {
     margin-bottom: 1.5rem;
   }
+  /* MOBILE */
+@media (max-width: 768px) {
+
+    #experience h2 {
+        text-align: center;
+    }
+
+}
 }
