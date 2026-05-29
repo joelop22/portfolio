@@ -337,7 +337,28 @@ nav .container {
   object-fit: cover;
   border-radius: 20px;
 }
+/* About Me Title */
+.about-title {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 3rem;
+}
 
+/* Desktop */
+@media (min-width: 769px) {
+    .about-title {
+        position: relative;
+        left: -120px; /* adjust this value */
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .about-title {
+        text-align: center;
+        margin: 0 auto 2rem auto;
+    }
+}
 /* Experience / Stats */
 .stats-grid {
   display: grid;
