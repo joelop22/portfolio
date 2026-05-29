@@ -347,7 +347,7 @@ nav .container {
 /* Desktop */
 @media (min-width: 769px) {
     .about-title {
-        margin-left: 330px; /* adjust if needed */
+        margin-left: 150px; /* adjust if needed */
     }
 }
 
