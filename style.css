@@ -340,23 +340,21 @@ nav .container {
 /* About Me Title */
 .about-title {
     text-align: center;
-    width: 100%;
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
+    width: fit-content;
 }
 
 /* Desktop */
 @media (min-width: 769px) {
     .about-title {
-        position: relative;
-        left: -120px; /* adjust this value */
+        margin-left: 330px; /* adjust if needed */
     }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
     .about-title {
-        text-align: center;
-        margin: 0 auto 2rem auto;
+        margin: 0 auto 3rem auto;
     }
 }
 /* Experience / Stats */
