@@ -517,11 +517,19 @@ nav .container {
   transition: color 0.5s ease;
 }
 
-.contact-item a {
-  color: var(--color-text);
-  text-decoration: none;
-  transition: color 0.3s;
-  word-break: break-all;
+.contact-item i {
+  font-size: 2rem;
+  color: var(--color-violet);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-item:hover i.fa-envelope { color: #EA4335; }
+.contact-item:hover i.fa-whatsapp { color: #25D366; }
+.contact-item:hover i.fa-instagram { color: #E1306C; }
+.contact-item:hover i.fa-behance { color: #1769FF; }
+
+.contact-item:hover i {
+  transform: scale(1.15);
 }
 
 .contact-item a:hover {
