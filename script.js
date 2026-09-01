@@ -512,6 +512,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupSmoothScroll();
     await renderCategoryPage();
     setupAnimations();
+    setupHeroLetterReveal(); 
     setupProtection();
     setupSecretAdminAccess();
 });
