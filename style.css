@@ -247,6 +247,13 @@ nav .container {
   width: 100%;
 }
 
+.hero h1 span {
+  background: inherit;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .hero h1 {
   font-size: 6rem;
   line-height: 1.1;
