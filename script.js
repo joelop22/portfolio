@@ -432,7 +432,7 @@ const setupSecretAdminAccess = () => {
         clickCount++;
         clearTimeout(clickTimer);
 
-        if (clickCount >= 6) {
+        if (clickCount >= 5) {
             clickCount = 0;
             window.location.href = 'login.html';
             return;
