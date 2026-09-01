@@ -459,4 +459,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     await renderCategoryPage();
     setupAnimations();
     setupProtection();
+    setupSecretAdminAccess();
 });
