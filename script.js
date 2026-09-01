@@ -145,7 +145,7 @@ const renderIndexWorks = async () => {
         { id: 'product-posters', page: 'product-posters.html' },
         { id: 'image-manipulation', page: 'image-manipulation.html' },
         { id: 'social-media-ads', page: 'social-media-ads.html' },
-        { id: 'movie-posters', page: 'movie-posters.html' }
+        { id: 'movie-posters', page: 'movie-posters.html' },
         { id: 'photography', page: 'photography.html' }
     ];
 
