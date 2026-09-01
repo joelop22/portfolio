@@ -418,6 +418,38 @@ const cleanUrl = () => {
     }
 };
 
+// --- Secret Admin Access (tap logo 5x) ---
+const setupSecretAdminAccess = () => {
+    const logo = document.querySelector('.logo');
+    if (!logo) return;
+
+    const defaultHref = logo.getAttribute('href') || 'index.html';
+    let clickCount = 0;
+    let clickTimer = null;
+
+    logo.addEventListener('click', (e) => {
+        e.preventDefault();
+        clickCount++;
+        clearTimeout(clickTimer);
+
+        if (clickCount >= 6) {
+            clickCount = 0;
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Wait to see if another click is coming before doing the normal action
+        clickTimer = setTimeout(() => {
+            clickCount = 0;
+            if (defaultHref === '#') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.location.href = defaultHref;
+            }
+        }, 600);
+    });
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     cleanUrl(); // Hide .html from URL bar
