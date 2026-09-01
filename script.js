@@ -418,6 +418,60 @@ const cleanUrl = () => {
     }
 };
 
+// --- Scroll-driven letter reveal for hero heading ---
+const setupHeroLetterReveal = () => {
+    const heading = document.querySelector('.hero h1');
+    const hero = document.getElementById('hero');
+    if (!heading || !hero) return;
+
+    const lines = heading.innerHTML.split('<br>');
+    heading.innerHTML = '';
+    const lineGroups = [];
+
+    lines.forEach(line => {
+        const lineEl = document.createElement('span');
+        lineEl.style.display = 'block';
+        const letterSpans = [];
+
+        line.split('').forEach(char => {
+            const span = document.createElement('span');
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            span.style.display = 'inline-block';
+            span.style.willChange = 'transform';
+            lineEl.appendChild(span);
+            letterSpans.push(span);
+        });
+
+        heading.appendChild(lineEl);
+        lineGroups.push(letterSpans);
+    });
+
+    lineGroups.forEach(letters => {
+        const n = letters.length;
+        letters.forEach((span, i) => {
+            const t = n > 1 ? i / (n - 1) : 0;
+            const curve = Math.abs(Math.cos(t * Math.PI));
+            span.dataset.startY = -55 * curve;
+        });
+    });
+
+    const allSpans = lineGroups.flat();
+
+    const updateReveal = () => {
+        const heroRect = hero.getBoundingClientRect();
+        let p = -heroRect.top / hero.offsetHeight;
+        p = Math.min(Math.max(p, 0), 1);
+
+        allSpans.forEach(span => {
+            const startY = parseFloat(span.dataset.startY);
+            span.style.transform = `translateY(${startY * (1 - p)}px)`;
+        });
+    };
+
+    window.addEventListener('scroll', () => requestAnimationFrame(updateReveal));
+    updateReveal();
+};
+
 // --- Secret Admin Access (tap logo 5x) ---
 const setupSecretAdminAccess = () => {
     const logo = document.querySelector('.logo');
