@@ -506,13 +506,12 @@ const setupSecretAdminAccess = () => {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
-    cleanUrl(); // Hide .html from URL bar
-    setupModal(); // Initialize modal first
+    cleanUrl();
+    setupModal();
     await renderIndexWorks();
     setupSmoothScroll();
     await renderCategoryPage();
     setupAnimations();
-    setupHeroLetterReveal(); 
     setupProtection();
     setupSecretAdminAccess();
 });
