@@ -504,10 +504,94 @@ const setupSecretAdminAccess = () => {
     });
 };
 
+
+/* Self-contained Digital Products gallery. Does not read or write portfolioWorks. 
+ * Optional screenshots: put files at assets/digital/<slug>.webp and set image below. */
+const digitalProjects = [
+  {id:'design-dna',title:'Design DNA',type:'Design analysis · Web app',mark:'DNA',image:'',description:'A visual design analysis platform exploring typography, color, composition and the principles behind effective design.',url:'https://www.dnadesign.in/'},
+  {id:'penny',title:'Penny',type:'Personal finance · Android app',mark:'₹',image:'',description:'An Android personal finance app designed to make daily money management easier, with spending history, daily allowance, monthly bills and a home-screen widget.'},
+  {id:'max-assistant',title:'MAX Assistant',type:'Voice assistant · Android app',mark:'MAX',image:'',description:'An experimental Android voice assistant designed for natural spoken commands, including calling selected contacts, WhatsApp messaging and music playback controls.'},
+  {id:'akshythks',title:'Portfolio Website 01',type:'Portfolio · Website',mark:'01',image:'',description:'A responsive portfolio website focused on presenting creative work through a clear and modern digital experience.',url:'https://akshythks.vercel.app/'},
+  {id:'rahul-guitar',title:'Portfolio Website 02',type:'Music lessons · Website',mark:'02',image:'',description:'A website for Rahul David Guitar Lessons, presenting music education through an accessible and responsive online experience.',url:'https://rahul-david-guitar-lessons.vercel.app/'}
+];
+const setupDigitalProducts = () => {
+  const grid = document.getElementById('grid-digital-products');
+  const more = document.getElementById('digital-view-more');
+  if (!grid || !more) return;
+  let expanded = false;
+  const modal = document.createElement('div');
+  modal.className = 'digital-modal';
+  modal.hidden = true;
+  modal.innerHTML = '<div class="digital-modal-panel" role="dialog" aria-modal="true" aria-labelledby="digital-modal-title"><button type="button" class="digital-modal-close" aria-label="Close project details">×</button><div class="digital-modal-label"></div><h3 id="digital-modal-title"></h3><div class="digital-modal-visual"></div><p class="digital-modal-description"></p><a class="digital-modal-link" target="_blank" rel="noopener noreferrer">Visit website <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div>';
+  document.body.appendChild(modal);
+  const close = modal.querySelector('.digital-modal-close');
+  let previousFocus = null;
+  const closeModal = () => { modal.hidden = true; document.body.style.overflow = ''; previousFocus?.focus(); };
+  close.addEventListener('click',closeModal);
+  modal.addEventListener('click',e => {if(e.target === modal)closeModal();});
+  document.addEventListener('keydown',e => {
+    if(modal.hidden)return;
+    if(e.key === 'Escape')closeModal();
+    if(e.key === 'Tab'){
+      const focusables = [...modal.querySelectorAll('button,a:not([hidden])')].filter(el=>!el.hidden);
+      if(!focusables.length)return;
+      const first=focusables[0],last=focusables[focusables.length-1];
+      if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
+    }
+  });
+  const visual = (project,full=false) => {
+    const wrap=document.createElement('div');
+    wrap.className=full?'digital-modal-visual':'digital-card-art';
+    if(project.image){
+      const img=document.createElement('img');img.src=project.image;img.alt=project.title+' screenshot';img.loading='lazy';
+      if(!full)img.className='digital-cover';
+      img.onerror=()=>{wrap.replaceChildren();const label=document.createElement('strong');label.textContent=project.mark;wrap.appendChild(label);};
+      wrap.appendChild(img);
+    }else{const label=document.createElement('strong');label.textContent=project.mark;wrap.appendChild(label);}
+    return wrap;
+  };
+  const openProject = (project) => {
+    previousFocus=document.activeElement;
+    modal.querySelector('.digital-modal-label').textContent=project.type;
+    modal.querySelector('#digital-modal-title').textContent=project.title;
+    modal.querySelector('.digital-modal-description').textContent=project.description;
+    modal.querySelector('.digital-modal-visual').replaceWith(visual(project,true));
+    const link=modal.querySelector('.digital-modal-link');
+    link.hidden=!project.url;
+    if(project.url)link.href=project.url;else link.removeAttribute('href');
+    modal.hidden=false;document.body.style.overflow='hidden';close.focus();
+  };
+  digitalProjects.forEach((project,index)=>{
+    const card=document.createElement('button');
+    card.type='button';card.className='work-card digital-card fade-up';
+    card.hidden=index>=5;
+    card.setAttribute('aria-label','View details for '+project.title);
+    card.appendChild(visual(project));
+    const info=document.createElement('div');info.className='work-info';
+    const heading=document.createElement('h4');heading.textContent=project.title;
+    const type=document.createElement('p');type.textContent=project.type;
+    info.append(heading,type);card.appendChild(info);
+    card.addEventListener('click',()=>openProject(project));
+    grid.appendChild(card);
+    if(typeof fadeObserver!=='undefined')fadeObserver.observe(card);
+  });
+  const updateMore=()=>{
+    const extras=[...grid.children].slice(5);
+    extras.forEach(card=>card.hidden=!expanded);
+    more.hidden=extras.length===0;
+    more.setAttribute('aria-expanded',String(expanded));
+    more.innerHTML=expanded?'Show Less <i class="fas fa-chevron-up" aria-hidden="true"></i>':'View More <i class="fas fa-chevron-down" aria-hidden="true"></i>';
+  };
+  more.addEventListener('click',()=>{expanded=!expanded;updateMore();});
+  updateMore();
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     cleanUrl();
     setupModal();
+    setupDigitalProducts();
     await renderIndexWorks();
     setupSmoothScroll();
     await renderCategoryPage();
