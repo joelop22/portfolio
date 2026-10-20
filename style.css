@@ -980,3 +980,18 @@ th {
 .digital-modal-link{display:inline-block;background:var(--color-violet);padding:.8rem 1.3rem;border-radius:8px;color:white;text-decoration:none;font-weight:600}
 .digital-modal-link[hidden]{display:none}
 @media(prefers-reduced-motion:reduce){.digital-card,.digital-card *{transition:none!important}}
+
+/* MAX Assistant project branding and swipeable screenshots */
+.digital-card-art img.digital-cover[src$="max-logo.svg"]{width:55%;height:55%;object-fit:contain;filter:drop-shadow(0 12px 38px rgba(120,80,255,.35))}
+.digital-modal-visual img[src$="max-logo.svg"]{width:135px;height:135px;object-fit:contain}
+.digital-screenshots{margin:1.5rem 0}
+.digital-screenshots h4{font-size:1.05rem;margin:0 0 .85rem}
+.digital-screenshot-track{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;padding:0 0 .75rem;overscroll-behavior-inline:contain}
+.digital-screenshot-track:focus-visible{outline:2px solid #a46cff;outline-offset:3px}
+.digital-screenshot-item{flex:0 0 min(210px,72%);scroll-snap-align:start;margin:0;overflow:hidden}
+.digital-screenshot-item[hidden]{display:none}
+.digital-screenshot-item img{display:block;width:100%;aspect-ratio:9/19.5;object-fit:contain;background:#0b1020;border-radius:15px;border:1px solid rgba(255,255,255,.12)}
+.digital-screenshot-item figcaption{color:#c9bdd6;text-align:center;font-size:.85rem;padding:.6rem 0}
+.digital-screenshot-controls{display:flex;justify-content:flex-end;gap:.65rem;margin-top:.4rem}
+.digital-screenshot-controls button{width:42px;height:42px;border:1px solid rgba(255,255,255,.2);background:#242038;color:#fff;border-radius:50%;cursor:pointer;font-size:1.2rem}
+.digital-screenshot-controls button:focus-visible{outline:2px solid #a46cff}
