@@ -511,8 +511,8 @@ const digitalProjects = [
   {id:'design-dna',title:'Design DNA',type:'Design analysis · Web app',mark:'DNA',image:'',description:'A visual design analysis platform exploring typography, color, composition and the principles behind effective design.',url:'https://www.dnadesign.in/'},
   {id:'penny',title:'Penny',type:'Personal finance · Android app',mark:'₹',image:'',description:'An Android personal finance app designed to make daily money management easier, with spending history, daily allowance, monthly bills and a home-screen widget.'},
   {id:'max-assistant',title:'MAX Assistant',type:'Voice assistant · Android app',mark:'MAX',image:'',description:'An experimental Android voice assistant designed for natural spoken commands, including calling selected contacts, WhatsApp messaging and music playback controls.'},
-  {id:'akshythks',title:'Portfolio Website 01',type:'Portfolio · Website',mark:'01',image:'',description:'A responsive portfolio website focused on presenting creative work through a clear and modern digital experience.',url:'https://akshythks.vercel.app/'},
-  {id:'rahul-guitar',title:'Portfolio Website 02',type:'Music lessons · Website',mark:'02',image:'',description:'A website for Rahul David Guitar Lessons, presenting music education through an accessible and responsive online experience.',url:'https://rahul-david-guitar-lessons.vercel.app/'}
+  {id:'akshythks',title:'Akshyth Portfolio',type:'Portfolio · Website',mark:'01',image:'',description:'A responsive portfolio website focused on presenting creative work through a clear and modern digital experience.',url:'https://akshythks.vercel.app/'},
+  {id:'rahul-guitar',title:'Rahul David Guitar Lessons',type:'Music lessons · Website',mark:'02',image:'',description:'A website for Rahul David Guitar Lessons, presenting music education through an accessible and responsive online experience.',url:'https://rahul-david-guitar-lessons.vercel.app/'}
 ];
 const setupDigitalProducts = () => {
   const grid = document.getElementById('grid-digital-products');
