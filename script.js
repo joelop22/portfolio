@@ -510,7 +510,7 @@ const setupSecretAdminAccess = () => {
 const digitalProjects = [
   {id:'design-dna',title:'Design DNA',type:'Design analysis · Web app',mark:'DNA',image:'',description:'A visual design analysis platform exploring typography, color, composition and the principles behind effective design.',url:'https://www.dnadesign.in/'},
   {id:'penny',title:'Penny',type:'Personal finance · Android app',mark:'₹',image:'',description:'An Android personal finance app designed to make daily money management easier, with spending history, daily allowance, monthly bills and a home-screen widget.'},
-  {id:'max-assistant',title:'MAX Assistant',type:'Voice assistant · Android app',mark:'MAX',image:'',description:'An experimental Android voice assistant designed for natural spoken commands, including calling selected contacts, WhatsApp messaging and music playback controls.'},
+  {id:'max-assistant',title:'MAX Assistant',type:'Voice assistant · Android app',mark:'MAX',image:'assets/digital/max-logo.svg',screenshots:[{src:'assets/digital/max-home.webp',label:'Home'},{src:'assets/digital/max-commands.webp',label:'Voice commands'},{src:'assets/digital/max-settings.webp',label:'Settings'}],description:'An experimental Android voice assistant designed for natural spoken commands, including calling selected contacts, WhatsApp messaging and music playback controls.'},
   {id:'akshythks',title:'Akshyth Portfolio',type:'Portfolio · Website',mark:'01',image:'',description:'A responsive portfolio website focused on presenting creative work through a clear and modern digital experience.',url:'https://akshythks.vercel.app/'},
   {id:'rahul-guitar',title:'Rahul David Guitar Lessons',type:'Music lessons · Website',mark:'02',image:'',description:'A website for Rahul David Guitar Lessons, presenting music education through an accessible and responsive online experience.',url:'https://rahul-david-guitar-lessons.vercel.app/'}
 ];
@@ -557,6 +557,28 @@ const setupDigitalProducts = () => {
     modal.querySelector('#digital-modal-title').textContent=project.title;
     modal.querySelector('.digital-modal-description').textContent=project.description;
     modal.querySelector('.digital-modal-visual').replaceWith(visual(project,true));
+    const oldGallery=modal.querySelector('.digital-screenshots');
+    if(oldGallery)oldGallery.remove();
+    if(project.screenshots?.length){
+      const gallery=document.createElement('section');gallery.className='digital-screenshots';gallery.setAttribute('aria-label',project.title+' screenshots');
+      const heading=document.createElement('h4');heading.textContent='App screenshots';gallery.appendChild(heading);
+      const track=document.createElement('div');track.className='digital-screenshot-track';track.tabIndex=0;track.setAttribute('aria-label','Swipe left or right to browse screenshots');
+      project.screenshots.forEach((shot,i)=>{
+        const item=document.createElement('figure');item.className='digital-screenshot-item';
+        const img=document.createElement('img');img.src=shot.src;img.alt=project.title+' — '+shot.label;img.loading='lazy';
+        img.onerror=()=>{item.hidden=true; if(![...track.children].some(el=>!el.hidden))gallery.hidden=true;};
+        const caption=document.createElement('figcaption');caption.textContent=shot.label;
+        item.append(img,caption);track.appendChild(item);
+      });
+      gallery.appendChild(track);
+      const controls=document.createElement('div');controls.className='digital-screenshot-controls';
+      const prev=document.createElement('button');prev.type='button';prev.textContent='←';prev.setAttribute('aria-label','Previous screenshot');
+      const next=document.createElement('button');next.type='button';next.textContent='→';next.setAttribute('aria-label','Next screenshot');
+      const move=(direction)=>{const first=track.querySelector('figure:not([hidden])');track.scrollBy({left:direction*(first?.getBoundingClientRect().width||220)+direction*16,behavior:'smooth'});};
+      prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));
+      controls.append(prev,next);gallery.appendChild(controls);
+      modal.querySelector('.digital-modal-description').after(gallery);
+    }
     const link=modal.querySelector('.digital-modal-link');
     link.hidden=!project.url;
     if(project.url)link.href=project.url;else link.removeAttribute('href');
