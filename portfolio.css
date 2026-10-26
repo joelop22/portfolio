@@ -6,3 +6,34 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.fade-up:not(.visible){opacity:1;translate:none}}
 .work-category:not(.digital-section) .work-card:only-child{grid-column:1/-1;max-width:100%}.work-category:not(.digital-section) .work-card:only-child .work-img{aspect-ratio:1.9;max-height:650px;padding:25px;background:#e2e2d9}.hero-line{word-spacing:.06em}
 @media(max-width:600px){.work-category:not(.digital-section) .work-card:only-child .work-img{aspect-ratio:1.2;padding:14px}}
+
+/* Compact artwork presentation and staggered typography. */
+.motion-word{display:inline-block;transform-origin:0 100%}
+.hero-line{animation:none}
+.hero{border-bottom:1px solid var(--line)}
+.hero-bottom{margin-bottom:64px}
+.contact-title .motion-word{position:static;font-size:inherit}
+.contact-title:hover .motion-word{transform:none}
+@media(min-width:901px){
+ .hero{padding-top:34px;padding-bottom:10px}
+ .hero h1{font-size:clamp(90px,10.5vw,158px);max-width:1350px;margin:52px auto 40px}
+ .hero-last{padding-left:24%}
+ .work-section{padding-top:70px}
+ .work-category{margin-bottom:55px}
+ .works-grid,.digital-section .works-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 24px;align-items:start}
+ .work-card,.work-card:nth-child(even){margin-top:0;align-self:start}
+ .work-card:not(.digital-card),.work-category:not(.digital-section) .work-card:only-child{grid-column:auto;width:100%;max-width:300px;justify-self:start}
+ .work-card .work-img,.work-category:not(.digital-section) .work-card:only-child .work-img{width:100%;height:auto;aspect-ratio:auto;max-height:none;padding:0;background:transparent;border-radius:3px}
+ .work-info{padding:12px 0}
+ .work-info h4{font-size:12px;line-height:1.5}
+ .work-info>span{width:25px;height:25px;flex-shrink:0}
+ .category-head{padding-bottom:15px;border-bottom:1px solid var(--line)}
+ .category-head h3{font-size:19px}
+ .digital-card-art{aspect-ratio:1.2}
+ .digital-section{padding-top:60px;margin-top:65px}
+ #full-works-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(min-width:1500px){.works-grid,.digital-section .works-grid,#full-works-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.motion-word{transform:none!important;filter:none!important;opacity:1!important}}
+.category-head h3>.motion-word{font:inherit;color:inherit;margin:0;vertical-align:baseline}
+.collection-page h1>.motion-word{color:inherit}

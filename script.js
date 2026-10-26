@@ -14,7 +14,6 @@ function renderWorks(works){
  const categories=['product-posters','image-manipulation','social-media-ads','movie-posters','photography'];
  categories.forEach(category=>{const grid=document.getElementById('grid-'+category);if(!grid)return;const all=works.filter(w=>w.category===category);const selected=all.filter(w=>w.showOnIndex===true);grid.replaceChildren(...(selected.length?selected:all).slice(0,4).map(workCard));document.getElementById('cat-'+category).classList.toggle('empty',!all.length);});
  const full=document.getElementById('full-works-grid');if(full){const selected=works.filter(w=>w.category===document.body.dataset.category);full.replaceChildren(...selected.map(workCard));if(!selected.length)full.textContent='No work is available in this collection yet.';}
- const hero=document.getElementById('hero-art');if(hero&&works.length){const selected=works.filter(w=>w.showOnIndex===true);const picks=['image-manipulation','product-posters','movie-posters'].map(category=>works.find(w=>w.category===category)).filter(Boolean);hero.replaceChildren(...picks.map((work,i)=>{const b=workCard(work);b.className='hero-art-card';b.querySelector('img').loading='eager';b.style.setProperty('--rotation',[-9,5,-3][i]+'deg');return b;}));}
 }
 async function loadWorks(){
  try{const response=await fetch('assets/works.json');if(response.ok){worksCache=await response.json();renderWorks(worksCache);}}catch{}
@@ -133,6 +132,32 @@ const setupDigitalProducts = () => {
 };
 
 
+
+function setupTextMotion(){
+ if(reduceMotion.matches)return;
+ const animations=new Set();
+ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+  if(!entry.isIntersecting)return;
+  observer.unobserve(entry.target);
+  entry.target.querySelectorAll('.motion-word').forEach((word,i)=>{
+   const animation=word.animate([
+    {opacity:0,transform:'translateY(28px) rotate(2deg)',filter:'blur(3px)'},
+    {opacity:1,transform:'translateY(0) rotate(0)',filter:'blur(0)'}
+   ],{duration:850,delay:Math.min(i*65,400),easing:'cubic-bezier(.16,1,.3,1)',fill:'backwards'});
+   animations.add(animation);animation.onfinish=()=>animations.delete(animation);
+  });
+ }),{threshold:.2});
+ document.querySelectorAll('.hero h1,.section-head h2,.about-copy h2,.collection-page h1,.category-head h3,.contact-title,.hero-eyebrow,.eyebrow').forEach(heading=>{
+  const walker=document.createTreeWalker(heading,NodeFilter.SHOW_TEXT);const nodes=[];
+  while(walker.nextNode()){if(walker.currentNode.textContent.trim()&&!walker.currentNode.parentElement.closest('[aria-hidden]'))nodes.push(walker.currentNode);}
+  nodes.forEach(node=>{const fragment=document.createDocumentFragment();node.textContent.split(/(\s+)/).forEach(word=>{
+   if(!word.trim()){fragment.append(document.createTextNode(word));return;}
+   const span=document.createElement('span');span.className='motion-word';span.textContent=word;fragment.append(span);
+  });node.replaceWith(fragment);});observer.observe(heading);
+ });
+ reduceMotion.addEventListener('change',event=>{if(event.matches){observer.disconnect();animations.forEach(a=>a.cancel());animations.clear();}});
+}
+
 function setupInteractions(){
  document.querySelectorAll('.section-head,.about-copy,.about-image,.category-head').forEach(el=>{el.classList.add('fade-up');fadeObserver.observe(el);});
  document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});document.querySelectorAll('.work-category:not(.digital-section)').forEach(section=>{section.hidden=button.dataset.filter!=='all'&&section.id!=='cat-'+button.dataset.filter;});}));
@@ -140,4 +165,4 @@ function setupInteractions(){
  const star=document.querySelector('.hero-star');if(star&&!reduceMotion.matches){let angle=0;star.addEventListener('pointerenter',()=>{angle+=90;star.style.transform=`rotate(${angle}deg)`;});}
  const logo=document.querySelector('nav .logo');let taps=0,timer;logo?.addEventListener('click',e=>{if(logo.getAttribute('href')==='#'){e.preventDefault();window.scrollTo({top:0,behavior:reduceMotion.matches?'instant':'smooth'});}clearTimeout(timer);if(++taps===5)location.href='login.html';timer=setTimeout(()=>taps=0,1000);});
 }
-document.addEventListener('DOMContentLoaded',()=>{setupModal();setupDigitalProducts();setupInteractions();loadWorks();});
+document.addEventListener('DOMContentLoaded',()=>{setupModal();setupDigitalProducts();setupInteractions();setupTextMotion();loadWorks();});
