@@ -133,6 +133,22 @@ const setupDigitalProducts = () => {
 
 
 
+
+function setupHeroVideo(){
+ const video=document.getElementById('hero-video'),toggle=document.getElementById('hero-video-toggle');if(!video||!toggle)return;
+ const mobile=matchMedia('(max-width:600px)');let userPaused=reduceMotion.matches,visible=true,failed=false;
+ const update=()=>{toggle.textContent=video.paused?'Play video ▶':'Pause video Ⅱ';toggle.setAttribute('aria-label',video.paused?'Play background video':'Pause background video');};
+ const play=()=>{if(!failed)video.play().catch(()=>update());};
+ const chooseSource=()=>{video.src=mobile.matches?'VN20260508_124820.mp4':'VN20260508_113105.mp4';video.poster=mobile.matches?'assets/hero-poster-mobile.webp':'assets/hero-poster.webp';failed=false;video.load();if(!userPaused&&visible&&!document.hidden)play();};
+ toggle.addEventListener('click',()=>{userPaused=!video.paused;if(userPaused)video.pause();else play();});
+ video.addEventListener('play',update);video.addEventListener('pause',update);
+ video.addEventListener('error',()=>{failed=true;toggle.textContent='Video unavailable';toggle.disabled=true;});
+ new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible)video.pause();else if(!userPaused&&!document.hidden)play();},{threshold:.05}).observe(video);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)video.pause();else if(visible&&!userPaused)play();});
+ reduceMotion.addEventListener('change',event=>{if(event.matches){userPaused=true;video.pause();}});
+ mobile.addEventListener('change',chooseSource);chooseSource();update();
+}
+
 function setupTextMotion(){
  if(reduceMotion.matches)return;
  const animations=new Set();
@@ -165,4 +181,4 @@ function setupInteractions(){
  const star=document.querySelector('.hero-star');if(star&&!reduceMotion.matches){let angle=0;star.addEventListener('pointerenter',()=>{angle+=90;star.style.transform=`rotate(${angle}deg)`;});}
  const logo=document.querySelector('nav .logo');let taps=0,timer;logo?.addEventListener('click',e=>{if(logo.getAttribute('href')==='#'){e.preventDefault();window.scrollTo({top:0,behavior:reduceMotion.matches?'instant':'smooth'});}clearTimeout(timer);if(++taps===5)location.href='login.html';timer=setTimeout(()=>taps=0,1000);});
 }
-document.addEventListener('DOMContentLoaded',()=>{setupModal();setupDigitalProducts();setupInteractions();setupTextMotion();loadWorks();});
+document.addEventListener('DOMContentLoaded',()=>{setupModal();setupDigitalProducts();setupInteractions();setupTextMotion();setupHeroVideo();loadWorks();});
