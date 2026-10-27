@@ -2,18 +2,18 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const fadeObserver = new IntersectionObserver(entries => entries.forEach(entry => {if(entry.isIntersecting){entry.target.classList.add('visible');fadeObserver.unobserve(entry.target);}}),{threshold:0.06});
 let worksCache = [];
 const safeURL = value => {if(/^data:image\/(png|jpeg|webp|gif);base64,[a-zA-Z0-9+/=\s]+$/.test(value))return value;try {const u = new URL(value, location.href);return ['https:','http:'].includes(u.protocol) ? u.href : '';}catch{return '';}};
-function workCard(work) {
+function workCard(work, gallery=null, index=0) {
  const card=document.createElement('button');card.type='button';card.className='work-card fade-up';
  const label=(work.title||'').trim()||(work.category==='photography'?'Photography study':'Visual study');card.setAttribute('aria-label','View '+label);
  const img=document.createElement('img');img.src=safeURL(work.image);img.alt=label;img.className='work-img';img.loading='lazy';img.decoding='async';
  const info=document.createElement('div');info.className='work-info';const title=document.createElement('h4');title.textContent=label;const arrow=document.createElement('span');arrow.textContent='↗';info.append(title,arrow);card.append(img,info);
- card.addEventListener('click',()=>openModal(img.src,img.alt));fadeObserver.observe(card);return card;
+ card.addEventListener('click',()=>openModal(img.src,img.alt,Array.isArray(gallery)?gallery:null,index));fadeObserver.observe(card);return card;
 }
 function renderWorks(works){
  const status=document.getElementById('gallery-status');if(status)status.hidden=works.length>0;
  const categories=['product-posters','image-manipulation','social-media-ads','movie-posters','photography'];
  categories.forEach(category=>{const grid=document.getElementById('grid-'+category);if(!grid)return;const all=works.filter(w=>w.category===category);const selected=all.filter(w=>w.showOnIndex===true);grid.replaceChildren(...(selected.length?selected:all).slice(0,4).map(workCard));document.getElementById('cat-'+category).classList.toggle('empty',!all.length);});
- const full=document.getElementById('full-works-grid');if(full){const selected=works.filter(w=>w.category===document.body.dataset.category);full.replaceChildren(...selected.map(workCard));if(!selected.length)full.textContent='No work is available in this collection yet.';}
+ const full=document.getElementById('full-works-grid');if(full){const selected=works.filter(w=>w.category===document.body.dataset.category);full.replaceChildren(...selected.map((work,index)=>workCard(work,selected,index)));if(!selected.length)full.textContent='No work is available in this collection yet.';}
 }
 async function loadWorks(){
  try{const response=await fetch('assets/works.json');if(response.ok){worksCache=await response.json();renderWorks(worksCache);}}catch{}
@@ -26,9 +26,44 @@ async function loadWorks(){
  if(!works.length){const status=document.getElementById('gallery-status');if(status)status.textContent='New work is on its way. Explore my digital projects below.';}
  }catch(error){if(!worksCache.length){const status=document.getElementById('gallery-status')||document.getElementById('full-works-grid');if(status){status.replaceChildren(document.createTextNode('The gallery couldn’t load. '));const retry=document.createElement('button');retry.textContent='Try again';retry.addEventListener('click',()=>{status.textContent='Loading artwork…';loadWorks();});status.append(retry);const link=document.createElement('a');link.href='https://www.behance.net/joelshajanv';link.textContent=' View work on Behance ↗';status.append(link);}}}
 }
-let artworkDialog,returnFocus;
-function setupModal(){artworkDialog=document.createElement('dialog');artworkDialog.className='artwork-dialog';artworkDialog.setAttribute('aria-label','Artwork preview');artworkDialog.innerHTML='<button class="modal-close" aria-label="Close artwork">×</button><img class="modal-img" alt=""><p class="modal-info"></p>';document.body.append(artworkDialog);artworkDialog.querySelector('button').addEventListener('click',()=>artworkDialog.close());artworkDialog.addEventListener('click',e=>{if(e.target===artworkDialog)artworkDialog.close();});artworkDialog.addEventListener('close',()=>{document.body.style.overflow='';returnFocus?.focus();});}
-function openModal(src,title){returnFocus=document.activeElement;artworkDialog.querySelector('img').src=src;artworkDialog.querySelector('img').alt=title;artworkDialog.querySelector('p').textContent=title;artworkDialog.showModal();document.body.style.overflow='hidden';}
+let artworkDialog,returnFocus,modalWorks=[],modalIndex=0;
+function updateArtwork(){
+ const work=modalWorks[modalIndex];if(!work)return;
+ const title=(work.title||'').trim()||'Photography study';
+ const img=artworkDialog.querySelector('.modal-img');img.src=safeURL(work.image);img.alt=title;
+ artworkDialog.querySelector('.modal-info').textContent=title;
+ const nav=artworkDialog.querySelector('.artwork-navigation');nav.hidden=modalWorks.length<2;
+ artworkDialog.querySelector('.artwork-counter').textContent=`${modalIndex+1} / ${modalWorks.length}`;
+ artworkDialog.querySelector('.artwork-prev').disabled=modalIndex===0;
+ artworkDialog.querySelector('.artwork-next').disabled=modalIndex===modalWorks.length-1;
+}
+function moveArtwork(direction){const next=modalIndex+direction;if(next<0||next>=modalWorks.length)return;modalIndex=next;updateArtwork();}
+function setupModal(){
+ artworkDialog=document.createElement('dialog');artworkDialog.className='artwork-dialog';artworkDialog.setAttribute('aria-label','Artwork preview');
+ artworkDialog.innerHTML='<button class="modal-close" aria-label="Close artwork">×</button><div class="artwork-stage"><img class="modal-img" alt="" draggable="false"></div><p class="modal-info" aria-live="polite"></p><div class="artwork-navigation" hidden><button type="button" class="artwork-prev" aria-label="Previous artwork">← Previous</button><span class="artwork-counter" role="status" aria-live="polite"></span><button type="button" class="artwork-next" aria-label="Next artwork">Next →</button></div>';
+ document.body.append(artworkDialog);
+ artworkDialog.querySelector('.modal-close').addEventListener('click',()=>artworkDialog.close());
+ artworkDialog.querySelector('.artwork-prev').addEventListener('click',()=>moveArtwork(-1));
+ artworkDialog.querySelector('.artwork-next').addEventListener('click',()=>moveArtwork(1));
+ artworkDialog.addEventListener('click',e=>{if(e.target===artworkDialog)artworkDialog.close();});
+ artworkDialog.addEventListener('close',()=>{document.body.style.overflow='';returnFocus?.focus();});
+ artworkDialog.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();moveArtwork(e.key==='ArrowRight'?1:-1);}});
+ const stage=artworkDialog.querySelector('.artwork-stage');let start=null;
+ stage.addEventListener('touchstart',e=>{start=e.touches.length===1?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null;},{passive:true});
+ stage.addEventListener('touchmove',e=>{if(e.touches.length!==1)start=null;},{passive:true});
+ stage.addEventListener('touchend',e=>{if(!start)return;const touch=e.changedTouches[0];const dx=touch.clientX-start.x,dy=touch.clientY-start.y;start=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5)moveArtwork(dx<0?1:-1);},{passive:true});
+ stage.addEventListener('touchcancel',()=>{start=null;},{passive:true});
+}
+function openModal(src,title,gallery=null,index=0){
+ returnFocus=document.activeElement;modalWorks=gallery?.length?gallery:[{image:src,title}];modalIndex=gallery?.length?index:0;
+ updateArtwork();artworkDialog.showModal();document.body.style.overflow='hidden';artworkDialog.querySelector('.modal-close').focus();
+}
+function setupImageProtection(){
+ // Deterrents only: public display cannot prevent screenshots or direct retrieval.
+ document.addEventListener('contextmenu',e=>{if(!e.target.closest('input,textarea,[contenteditable="true"]'))e.preventDefault();});
+ document.addEventListener('dragstart',e=>{if(e.target.closest('img,.work-card,.digital-card-art,.artwork-stage'))e.preventDefault();});
+ document.querySelectorAll('img').forEach(img=>img.draggable=false);
+}
 const digitalProjects = [
   {id:'design-dna',title:'Design DNA',type:'Design analysis · Web app',mark:'DNA',image:'assets/digital/design-dna-logo.svg',description:'A visual design analysis platform exploring typography, color, composition and the principles behind effective design.',url:'https://www.dnadesign.in/'},
   {id:'penny',title:'Penny',type:'Personal finance · Android app',mark:'₹',image:'assets/digital/penny-logo.svg',description:'An Android personal finance app designed to make daily money management easier, with spending history, daily allowance, monthly bills and a home-screen widget.'},
@@ -172,4 +207,4 @@ function setupInteractions(){
  const star=document.querySelector('.hero-star');if(star&&!reduceMotion.matches){let angle=0;star.addEventListener('pointerenter',()=>{angle+=90;star.style.transform=`rotate(${angle}deg)`;});}
  const logo=document.querySelector('nav .logo');let taps=0,timer;logo?.addEventListener('click',e=>{if(logo.getAttribute('href')==='#'){e.preventDefault();window.scrollTo({top:0,behavior:reduceMotion.matches?'instant':'smooth'});}clearTimeout(timer);if(++taps===5)location.href='login.html';timer=setTimeout(()=>taps=0,1000);});
 }
-document.addEventListener('DOMContentLoaded',()=>{setupModal();setupDigitalProducts();setupInteractions();setupHeroSpinner();setupTextMotion();loadWorks();});
+document.addEventListener('DOMContentLoaded',()=>{setupModal();setupImageProtection();setupDigitalProducts();setupInteractions();setupHeroSpinner();setupTextMotion();loadWorks();});

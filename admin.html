@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="fav.png">
     <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-title" content="Joel Shajan Varghese">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         if(sessionStorage.getItem('auth') !== 'true') {
@@ -15,12 +15,12 @@
         }
     </script>
 </head>
-<body>
+<body class="admin-dashboard">
     <div class="bg-gradient"></div>
 
     <nav>
         <div class="container">
-            <a href="index.html" class="logo">JOEL <span style="font-size: 1rem; color: var(--color-lime);">ADMIN</span></a>
+            <a href="index.html" class="logo">joel<span class="admin-badge">ADMIN</span></a>
             <ul class="nav-links">
                 <li><a href="index.html">Back to Home</a></li>
             </ul>
@@ -31,9 +31,9 @@
         <section class="admin-panel" style="justify-content: flex-start;">
             <div class="container">
                 <h2 style="margin-bottom: 1rem;">Portfolio Management</h2>
-                <p style="color: var(--color-text-muted); margin-bottom: 3rem;">Add new works to your portfolio. Changes are saved locally.</p>
+                <p style="color: var(--color-text-muted); margin-bottom: 3rem;">Add, edit and organise your artwork. Changes sync to your portfolio.</p>
                 
-                <div style="background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); margin-bottom: 3rem;">
+                <div class="admin-card" style="background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); margin-bottom: 3rem;">
                     <h3 style="margin-bottom: 1.5rem;">Add New Work</h3>
                     <form id="add-work-form">
                         <div class="form-group">
@@ -65,7 +65,7 @@
                         </div>
                         <input type="hidden" id="edit-work-id" value="">
                         <div class="form-group">
-                            <label>Image Upload</label>
+                            <label for="work-file">Image Upload</label>
                             <div class="drop-zone" id="drop-zone">
                                 <div class="drop-zone-text" id="drop-zone-text">
                                     <i class="fas fa-cloud-upload-alt"></i>
@@ -83,7 +83,7 @@
                     </form>
                 </div>
 
-                <div style="background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto;">
+                <div class="admin-card" style="background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto;">
                     <h3 style="margin-bottom: 1.5rem;">Current Works</h3>
                     <table id="works-table">
                         <thead>

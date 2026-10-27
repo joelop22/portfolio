@@ -85,3 +85,12 @@
 .portrait-spark>span{display:block;transition:transform 900ms cubic-bezier(.2,.7,.2,1);transform-origin:center}
 @media(max-width:600px){.digital-card-art{height:145px;padding:16px}.digital-modal-visual{height:210px;padding:18px}.portrait-spark{right:-18px;top:-14px}.work-category:not(.digital-section) .work-info h4,#full-works-grid .work-info h4{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.portrait-spark>span{transition:none}}
+/* Public-image deterrents; admin pages use their own stylesheet and script. */
+body img,.work-card,.artwork-stage,.digital-card-art,.digital-modal-visual{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.artwork-dialog{width:min(1040px,94vw);padding:24px;max-height:94dvh}
+.artwork-stage{display:flex;justify-content:center;align-items:center;min-width:0;touch-action:pan-y pinch-zoom}
+.artwork-dialog .modal-img{width:auto;height:auto;max-width:100%;max-height:68dvh;object-fit:contain}
+.artwork-navigation{display:flex;align-items:center;justify-content:space-between;gap:15px;border-top:1px solid var(--line);padding-top:15px;margin-top:15px}
+.artwork-navigation button{border:1px solid var(--line);border-radius:25px;background:var(--paper);padding:11px 18px;font-size:12px;min-height:44px}
+.artwork-navigation button:hover:not(:disabled){background:var(--ink);color:var(--paper)}.artwork-navigation button:disabled{opacity:.35;cursor:default}.artwork-counter{font-size:12px;color:var(--muted);white-space:nowrap}
+@media(max-width:600px){.artwork-dialog{padding:16px}.artwork-dialog .modal-img{max-height:65dvh}.artwork-navigation{gap:8px}.artwork-navigation button{padding:10px 13px;font-size:11px}}
