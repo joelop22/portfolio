@@ -999,3 +999,12 @@ th {
 /* MAX logo fills the complete project artwork area */
 .digital-card-art:has(> img.digital-cover[src$="max-logo.svg"])::before{display:none}
 .digital-card-art img.digital-cover[src$="max-logo.svg"]{width:100%;height:100%;object-fit:cover;filter:none;display:block}
+
+/* Landscape-friendly website screenshot galleries */
+.digital-screenshots:has(img[src*="design-dna-"]) .digital-screenshot-item,
+.digital-screenshots:has(img[src*="akshythks-"]) .digital-screenshot-item,
+.digital-screenshots:has(img[src*="rahul-guitar-"]) .digital-screenshot-item{flex-basis:min(92%,540px)}
+.digital-screenshots:has(img[src*="design-dna-"]) .digital-screenshot-item img,
+.digital-screenshots:has(img[src*="akshythks-"]) .digital-screenshot-item img,
+.digital-screenshots:has(img[src*="rahul-guitar-"]) .digital-screenshot-item img{aspect-ratio:16/9;object-fit:contain;background:#0a0a0a;border-radius:10px}
+@media(max-width:600px){.digital-screenshots:has(img[src*="design-dna-"]) .digital-screenshot-item,.digital-screenshots:has(img[src*="akshythks-"]) .digital-screenshot-item,.digital-screenshots:has(img[src*="rahul-guitar-"]) .digital-screenshot-item{flex-basis:94%}}
