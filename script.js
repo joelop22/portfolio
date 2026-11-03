@@ -65,11 +65,11 @@ function setupImageProtection(){
  document.querySelectorAll('img').forEach(img=>img.draggable=false);
 }
 const digitalProjects = [
-  {id:'design-dna',title:'Design DNA',type:'Design analysis · Web app',mark:'DNA',image:'assets/digital/design-dna-logo.svg',description:'A visual design analysis platform exploring typography, color, composition and the principles behind effective design.',url:'https://www.dnadesign.in/'},
+  {id:'design-dna',title:'Design DNA',type:'Design analysis · Web app',mark:'DNA',image:'assets/digital/design-dna-logo.svg',screenshots:[{src:'assets/digital/design-dna-1.webp',label:'Homepage'},{src:'assets/digital/design-dna-2.webp',label:'Upload'},{src:'assets/digital/design-dna-3.webp',label:'Analysis in progress'},{src:'assets/digital/design-dna-4.webp',label:'Analysis results'},{src:'assets/digital/design-dna-5.webp',label:'Color and typography'},{src:'assets/digital/design-dna-6.webp',label:'Library'},{src:'assets/digital/design-dna-7.webp',label:'Account'}],description:'A visual design analysis platform exploring typography, color, composition and the principles behind effective design.',url:'https://www.dnadesign.in/'},
   {id:'penny',title:'Penny',type:'Personal finance · Android app',mark:'₹',image:'assets/digital/penny-logo.svg',description:'An Android personal finance app designed to make daily money management easier, with spending history, daily allowance, monthly bills and a home-screen widget.'},
   {id:'max-assistant',title:'MAX Assistant',type:'Voice assistant · Android app',mark:'MAX',image:'assets/digital/max-logo.svg',screenshots:[{src:'assets/digital/max-home.webp',label:'Home'},{src:'assets/digital/max-commands.webp',label:'Voice commands'},{src:'assets/digital/max-settings.webp',label:'Settings'}],description:'An experimental Android voice assistant designed for natural spoken commands, including calling selected contacts, WhatsApp messaging and music playback controls.'},
-  {id:'akshythks',title:'Akshyth Portfolio',type:'Portfolio · Website',mark:'01',image:'assets/digital/akshyth-logo.svg',description:'A responsive portfolio website focused on presenting creative work through a clear and modern digital experience.',url:'https://akshythks.vercel.app/'},
-  {id:'rahul-guitar',title:'Rahul David Guitar Lessons',type:'Music lessons · Website',mark:'02',image:'assets/digital/rahul-david-logo.svg',description:'A website for Rahul David Guitar Lessons, presenting music education through an accessible and responsive online experience.',url:'https://rahul-david-guitar-lessons.vercel.app/'}
+  {id:'akshythks',title:'Akshyth Portfolio',type:'Portfolio · Website',mark:'01',image:'assets/digital/akshyth-logo.svg',screenshots:[{src:'assets/digital/akshythks-1.webp',label:'Homepage'},{src:'assets/digital/akshythks-2.webp',label:'Street gallery'},{src:'assets/digital/akshythks-3.webp',label:'Photo viewer'}],description:'A responsive portfolio website focused on presenting creative work through a clear and modern digital experience.',url:'https://akshythks.vercel.app/'},
+  {id:'rahul-guitar',title:'Rahul David Guitar Lessons',type:'Music lessons · Website',mark:'02',image:'assets/digital/rahul-david-logo.svg',screenshots:[{src:'assets/digital/rahul-guitar-1.webp',label:'Homepage'},{src:'assets/digital/rahul-guitar-2.webp',label:'Courses'},{src:'assets/digital/rahul-guitar-3.webp',label:'About the tutor'},{src:'assets/digital/rahul-guitar-4.webp',label:'FAQs and enquiries'}],description:'A website for Rahul David Guitar Lessons, presenting music education through an accessible and responsive online experience.',url:'https://rahul-david-guitar-lessons.vercel.app/'}
 ];
 const setupDigitalProducts = () => {
   const grid = document.getElementById('grid-digital-products');
@@ -118,7 +118,7 @@ const setupDigitalProducts = () => {
     if(oldGallery)oldGallery.remove();
     if(project.screenshots?.length){
       const gallery=document.createElement('section');gallery.className='digital-screenshots';gallery.setAttribute('aria-label',project.title+' screenshots');
-      const heading=document.createElement('h4');heading.textContent='App screenshots';gallery.appendChild(heading);
+      const heading=document.createElement('h4');heading.textContent='Project screenshots';gallery.appendChild(heading);
       const track=document.createElement('div');track.className='digital-screenshot-track';track.tabIndex=0;track.setAttribute('aria-label','Swipe left or right to browse screenshots');
       project.screenshots.forEach((shot,i)=>{
         const item=document.createElement('figure');item.className='digital-screenshot-item';
