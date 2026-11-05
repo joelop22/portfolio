@@ -74,6 +74,37 @@
 .work-category:not(.digital-section) .work-info h4,#full-works-grid .work-info h4{line-height:1.4;overflow-wrap:anywhere}
 @media(min-width:901px){.work-category:not(.digital-section) .works-grid,#full-works-grid{columns:4;column-gap:24px}}
 @media(min-width:1500px){.work-category:not(.digital-section) .works-grid,#full-works-grid{columns:5}}
+/* Homepage previews flow across each row in collection order. */
+#work .work-category:not(.digital-section) .works-grid {
+  --preview-gap: clamp(12px, 2vw, 24px);
+  display: grid;
+  columns: auto;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(260px, calc((100% - 4 * var(--preview-gap)) / 5))), 1fr));
+  gap: 24px var(--preview-gap);
+  align-items: start;
+}
+#work .work-category:not(.digital-section) .works-grid:not(:has(> :nth-child(3))) {
+  max-width: calc(600px + var(--preview-gap));
+}
+#work .work-card:only-child:not(.digital-card) {
+  max-width: 300px;
+}
+#work .work-category:not(.digital-section) .work-card {
+  display: block;
+  margin: 0;
+}
+#work .work-category:not(.digital-section) .work-img {
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+}
+#work #cat-photography .work-img {
+  aspect-ratio: 1;
+}
+@media (max-width: 640px) {
+  #work .work-category:not(.digital-section) .works-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+  }
+}
 /* Explicit flex bounds stop intrinsic SVG dimensions from cropping logo previews. */
 .digital-card-art,.digital-modal-visual{display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;overflow:hidden;padding:20px;background:#e5e3da;box-sizing:border-box}
 .digital-card-art{height:clamp(140px,18vw,240px);aspect-ratio:auto}
