@@ -12,7 +12,7 @@ function workCard(work, gallery=null, index=0) {
 function renderWorks(works){
  const status=document.getElementById('gallery-status');if(status)status.hidden=works.length>0;
  const categories=['product-posters','image-manipulation','social-media-ads','movie-posters','photography'];
- categories.forEach(category=>{const grid=document.getElementById('grid-'+category);if(!grid)return;const all=works.filter(w=>w.category===category);const selected=all.filter(w=>w.showOnIndex===true);grid.replaceChildren(...(selected.length?selected:all).slice(0,4).map(workCard));document.getElementById('cat-'+category).classList.toggle('empty',!all.length);});
+ categories.forEach(category=>{const grid=document.getElementById('grid-'+category);if(!grid)return;const all=works.filter(w=>w.category===category);const selected=all.filter(w=>w.showOnIndex===true);grid.replaceChildren(...(selected.length?selected:all.slice(0,4)).map(workCard));document.getElementById('cat-'+category).classList.toggle('empty',!all.length);});
  const full=document.getElementById('full-works-grid');if(full){const selected=works.filter(w=>w.category===document.body.dataset.category);full.replaceChildren(...selected.map((work,index)=>workCard(work,selected,index)));if(!selected.length)full.textContent='No work is available in this collection yet.';}
 }
 async function loadWorks(){
